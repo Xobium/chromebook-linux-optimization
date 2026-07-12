@@ -1,4 +1,6 @@
 # chromebook-linux-optimization
+[Repo Link](https://github.com/Xobium/chromebook-linux-optimization)
+
 A comprehensive, straight-to-the-point guide to installing, configuring, and optimizing (L)ubuntu for Chromebooks and low-spec laptops.
 
 "The best way to install, configure and optimize Lubuntu for Chromebooks."
@@ -59,14 +61,6 @@ rm -rf ~/.cache && mkdir ~/.cache && chattr +C ~/.cache
 
 ```
 When the Terminal asks for a password, just type in your password and press enter (Characters may not show up while you are typing it, that is normal). This authorizes the command to run.
-
-Then run these commands to remove the contents of the directories:
-
-```bash
-sudo rm -rf /var/tmp/*
-rm -rf ~/.cache/*
-
-```
 
 - [ ] Make system logs live inside RAM to reduce disk writes
 
