@@ -1,9 +1,11 @@
 # chromebook-linux-optimization
 A comprehensive, straight-to-the-point guide to installing, configuring, and optimizing (L)ubuntu for Chromebooks and low-spec laptops.
+
 "The best way to install, configure and optimize Lubuntu for Chromebooks."
 
 This guide is intended for devices which have a low amount of RAM (e.g. 4GB), and use eMMC or microSD for storage.
 It includes aggressive disk space saving tips which are most useful for devices with a small amount of storage (e.g. 16-64 GB).
+
 Most of the steps in this guide are still helpful for devices other than the ones mentioned above (e.g. any other low-spec laptop or newer Chromebooks with more RAM and storage), though some steps may be redundant or need small changes.
 
 This guide will be covering what to do during/after the actual installation of Linux, not how to get rid of ChromeOS and unlock your Chromebook. To install Linux on the Chromebook, you will first need to use the MrChromebox Script to unlock the UEFI.
