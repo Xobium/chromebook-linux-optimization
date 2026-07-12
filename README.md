@@ -51,10 +51,11 @@ Any Ubuntu-based Linux distribution will work with this guide, but I recommend L
 
 Run the following commands to disable copy-on-write (CoW) in certain directories to prevent unnecessary disk writes (known as "write amplification"):
 
+If you have any web browser open on the device, close it before running these commands.
+
 ```bash
-sudo mkdir -p /var/tmp
-sudo chattr +C /var/tmp
-chattr +C ~/.cache
+sudo rm -rf /var/tmp && sudo mkdir /var/tmp && sudo chattr +C /var/tmp
+rm -rf ~/.cache && mkdir ~/.cache && chattr +C ~/.cache
 
 ```
 When the Terminal asks for a password, just type in your password and press enter (Characters may not show up while you are typing it, that is normal). This authorizes the command to run.
@@ -259,7 +260,7 @@ sudo nano /etc/sysctl.d/99-swappiness.conf
 
 ```
 
-Add `vm.swappiness=80` to the file to set swappiness to 80.
+Add `vm.swappiness=100` to the file to set swappiness to 100.
 
 Save the file and close the editor.
 
