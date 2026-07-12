@@ -1,5 +1,6 @@
 # chromebook-linux-optimization
-A comprehensive, straight-to-the-point guide to installing, configuring, and optimizing (L)ubuntu for Chromebooks and low-spec laptops."The best way to install, configure and optimize Lubuntu for Chromebooks."
+A comprehensive, straight-to-the-point guide to installing, configuring, and optimizing (L)ubuntu for Chromebooks and low-spec laptops.
+"The best way to install, configure and optimize Lubuntu for Chromebooks."
 
 This guide is intended for devices which have a low amount of RAM (e.g. 4GB), and use eMMC or microSD for storage.
 It includes aggressive disk space saving tips which are most useful for devices with a small amount of storage (e.g. 16-64 GB).
