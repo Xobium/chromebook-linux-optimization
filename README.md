@@ -187,7 +187,7 @@ sudo apt update && sudo apt install zram-tools
 To edit its configuration run:
 
 ```bash
-nano /etc/default/zramswap
+sudo nano /etc/default/zramswap
 
 ```
 
@@ -238,7 +238,9 @@ sudo swapoff -a
 
 ```
 
-- [ ] Check/change the swappiness value. This makes the system more willing to use the new ZRAM we just set up.
+- [ ] Increase the system's "swappiness" value.
+
+This makes it more willing to use the new ZRAM we just set up. We want this because ZRAM is incredibly fast compared to the default disk swap setup that we disabled earlier.
 
 To check the value run:
 
@@ -254,7 +256,7 @@ sudo nano /etc/sysctl.d/99-swappiness.conf
 
 ```
 
-Add `vm.swappiness=100` to the file to set swappiness to 100.
+Add `vm.swappiness=180` to the file to set swappiness to 180.
 
 Save the file and close the editor.
 
