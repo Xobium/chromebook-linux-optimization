@@ -35,7 +35,7 @@ Press Ctrl+Alt+T to open Crosh (ChromeOS Terminal)
 # Lubuntu Optimization Guide
 Any Ubuntu-based Linux distribution will work with this guide, but I recommend Lubuntu. Make sure you know what you're doing if you choose to use this guide with a non-Ubuntu-based distribution.
 
-### System Tuning
+### Installation
 - [ ] [Download the ISO](https://lubuntu.me/downloads/) for a recent version of Lubuntu. I recommend downloading the latest LTS version (e.g. [26.04 LTS](https://cdimage.ubuntu.com/lubuntu/releases/26.04/release/)).
 - [ ] Burn the ISO to a USB flash drive or other external storage drive using tools like Rufus (Windows), Balena Etcher (Cross-platform) or Ventoy. There are many easy tutorials on how to do this, so I won't get into detail here.
 - [ ] Boot into the drive to enter the Lubuntu installer.
@@ -46,20 +46,13 @@ Any Ubuntu-based Linux distribution will work with this guide, but I recommend L
 - Delete every existing partition until the entire drive is shown as "Free Space".
 - Create a 256 MB "/boot/efi" partition formatted as **FAT32**
 - Create a "/" partition formatted as **BTRFS** that takes up the rest of the space on the drive
-- All done, continue with the installer! :)
+- All done, continue with the installer and make sure to remember the password you set! :)
 - [ ] After the installation is completed, log in with the username and password you created.
 - You should be met with a clean desktop environment
-- [ ] Open the Terminal. We will complete the rest of the guide using the Terminal.
 
-Run the following commands to disable copy-on-write (CoW) in certain directories to prevent unnecessary disk writes (known as "write amplification"):
+### System Tuning
 
-If you have any web browser open on the device, close it before running these commands.
-
-```bash
-sudo rm -rf /var/tmp && sudo mkdir /var/tmp && sudo chattr +C /var/tmp
-rm -rf ~/.cache && mkdir ~/.cache && chattr +C ~/.cache
-```
-When the Terminal asks for a password, just type in your password and press enter (Characters may not show up while you are typing it, that is normal). This authorizes the command to run.
+- [ ] Open the terminal (called QTerminal on Lubuntu). We will complete the rest of the guide using the terminal.
 
 - [ ] Make system logs live inside RAM to reduce disk writes
 
@@ -68,6 +61,7 @@ Make sure the configuration file exists by running:
 ```bash
 sudo mkdir -p /etc/systemd/journald.conf.d
 ```
+When the terminal asks for a password, just type in your password and press enter (Characters may not show up while you are typing it, that is normal). This authorizes the command to run.
 
 Then add the configuration by running:
 
