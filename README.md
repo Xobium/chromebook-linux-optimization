@@ -488,30 +488,6 @@ rm -rf ~/.cache/thumbnails/*
 
 ```
 
-- (Optional; this step is somewhat easy to mess up and break things, but can free a lot of disk space.) Remove unused icons, themes, and fonts
-  
-To list icons from installed themes run:
-
-```bash
-ls /usr/share/icons
-
-```
-
-To remove the folders for themes you won't use run:
-
-```bash
-sudo rm -rf /usr/share/icons/NAME
-
-```
-
-Do the same for fonts:
-
-```bash
-ls /usr/share/fonts
-sudo rm -rf /usr/share/fonts/NAME
-
-```
-
 - Run `sudo apt clean` and `sudo apt autoremove` regularly if using apt often
 
 - [ ] Install the laptop power management package
