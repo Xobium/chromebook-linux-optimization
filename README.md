@@ -58,7 +58,6 @@ If you have any web browser open on the device, close it before running these co
 ```bash
 sudo rm -rf /var/tmp && sudo mkdir /var/tmp && sudo chattr +C /var/tmp
 rm -rf ~/.cache && mkdir ~/.cache && chattr +C ~/.cache
-
 ```
 When the Terminal asks for a password, just type in your password and press enter (Characters may not show up while you are typing it, that is normal). This authorizes the command to run.
 
@@ -68,56 +67,94 @@ Make sure the configuration file exists by running:
 
 ```bash
 sudo mkdir -p /etc/systemd/journald.conf.d
-
 ```
 
 Then add the configuration by running:
 
 ```bash
 echo -e "[Journal]\nStorage=volatile\nRuntimeMaxUse=64M" | sudo tee /etc/systemd/journald.conf.d/volatile.conf
-
 ```
 
 Then restart the service:
 
 ```bash
 sudo systemctl restart systemd-journald
-
 ```
 
-- [ ] **IMPORTANT:** Edit the fstab configuration (`/etc/fstab`) to add filesystem compression.
+- [ ] **IMPORTANT:** Edit the fstab configuration (`/etc/fstab`) to add filesystem compression and configure other parts of your filesystem
 
-This can greatly increase the amount of usable space on disk among other benefits (often faster disk speeds and longer drive lifespan).
+This can significantly increase the amount of usable storage space you have, among other benefits like often faster disk speeds and longer drive lifespan.
 
 To edit the configuration run:
 
 ```bash
 sudo nano /etc/fstab
-
 ```
 Navigate the text editor using the arrow keys.
 
 To add zstd compression for root (`/`) AND home (`/home`):
-- Find the lines for both `/` and `/home` and edit both of them to set the options to `defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard`.
+- Find or create the lines for both `/` and `/home` and edit both of them to set the options to `defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard`.
 
-  The lines should now look something like this:
+  Those lines should look like this:
   
   ```text
-  UUID=[RANDOM CHARACTERS, DON'T EDIT THIS] /              btrfs   subvol=/@,defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard 0 0
-  UUID=[RANDOM CHARACTERS, DON'T EDIT THIS] /home          btrfs   subvol=/@home,defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard 0 0
+  UUID=[RANDOM CHARACTERS, DON'T EDIT THIS] /         btrfs   subvol=/@,defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard 0 0
+  UUID=[RANDOM CHARACTERS, DON'T EDIT THIS] /home     btrfs   subvol=/@home,defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard 0 0
   ```
 
-- Add `noatime,size=512M` to `/tmp`
-- Add `noatime,size=64M` to `/var/log`
-- (Optional) Add a line for `/var/cache/apt/archives` and add `noatime,size=2G` to its options (optional because it can sometimes cause hiccups with package upgrades)
-- Save the file (Ctrl+O, Enter) and close the editor (Ctrl+X).
-- Reboot now.
+Now, to lower disk usage and optimize writes in certain directories, we will add a couple more lines:
+- One for `/tmp` that lives in memory with a size limit of 512 MB.
+- And another for `/var/cache/apt/archives`, in memory with a size limit of 2 GB.
 
-After rebooting run:
+Add these lines to the bottom of the fstab. If the line for `/tmp` already exists, just edit it to match:
+
+  ```text
+  tmpfs     /tmp                     tmpfs   defaults,noatime,mode=1777,size=512M 0 0
+  tmpfs     /var/cache/apt/archives  tmpfs   defaults,noatime,mode=0755,size=2G   0 0
+  ```
+  
+  Once that's done, the full `/etc/fstab` file should look like this:
+  
+  ```text
+  UUID=[RANDOM CHARACTERS, DON'T EDIT THIS] /boot/efi   vfat    defaults   0 2
+  UUID=[RANDOM CHARACTERS, DON'T EDIT THIS] /           btrfs   subvol=/@,defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard 0 0
+  UUID=[RANDOM CHARACTERS, DON'T EDIT THIS] /home       btrfs   subvol=/@home,defaults,noatime,compress-force=zstd:1,ssd,space_cache=v2,nodiscard 0 0
+  tmpfs     /tmp                     tmpfs   defaults,noatime,mode=1777,size=512M 0 0
+  tmpfs     /var/cache/apt/archives  tmpfs   defaults,noatime,mode=0755,size=2G   0 0
+  ```
+
+Save the file (Ctrl+O, Enter) and close the editor (Ctrl+X).
+
+- [ ] **IMPORTANT**: Configure APT to clear its cache on the fly
+
+Since we configured the APT cache to live inside memory, we want to make sure it never uses up _too much_ of your RAM.
+
+To create a configuration file run:
+
+```bash
+sudo nano /etc/apt/apt.conf.d/00no-cache
+```
+
+Add these lines to the file:
+
+```text
+APT::Keep-Downloaded-Packages "false";
+Binary::apt::APT::Keep-Downloaded-Packages "0";
+
+# Ensures the APT cache folder exists on boot
+APT::Get::Pre-Invoke { "mkdir -p /var/cache/apt/archives/partial"; };
+```
+
+Save the file (Ctrl+O, Enter) and close the editor (Ctrl+X).
+
+Reboot now.
+
+- [ ] Compress already-existing files to claim back some storage space
+
+First, to see how much storage space the system is already using, run:
 
 ```bash
 sudo btrfs filesystem usage /
-
 ```
 
 Note down or save the output. We will use it in a little bit.
@@ -125,8 +162,7 @@ Note down or save the output. We will use it in a little bit.
 Run this command to apply compression to existing system files:
 
 ```bash
-sudo btrfs filesystem defragment -r -czstd /
-
+sudo btrfs filesystem defragment -r -czstd / /home
 ```
 
 This should take a little while, don't close the terminal or turn off the laptop.
@@ -135,7 +171,6 @@ After the command completes, run this command again:
 
 ```bash
 sudo btrfs filesystem usage /
-
 ```
 
 Compare the new output with the old one. Look at the `Used: X.XX GiB` line specifically.
@@ -159,7 +194,6 @@ vm.vfs_cache_pressure=75
 vm.dirty_background_ratio=3
 vm.dirty_ratio=7
 vm.page-cluster=0
-
 ```
 Save the file (Ctrl+O, Enter) and close the editor (Ctrl+X).
 
@@ -167,7 +201,6 @@ Apply the changes by running:
 
 ```bash
 sudo sysctl --system
-
 ```
 
 - [ ] Uninstall large preinstalled apps like LibreOffice, Thunderbird, VLC, etc. (they shouldn't even be installed if you chose Minimal Installation earlier, so you can skip this if they aren't there)
@@ -181,14 +214,12 @@ To install the tool run:
 
 ```bash
 sudo apt update && sudo apt install zram-tools
-
 ```
 
 To edit its configuration run:
 
 ```bash
 sudo nano /etc/default/zramswap
-
 ```
 
 Add to or edit the file to say the following:
