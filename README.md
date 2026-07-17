@@ -320,7 +320,10 @@ sudo apt purge --autoremove snapd
 
 ```
 
-- [ ] Look through startup apps (`ls ~/.config/autostart`) and remove apps that you don't need to start up automatically. If the file is empty you are already good.
+- [ ] Remove unnecessary startup apps
+
+List startup apps (`ls ~/.config/autostart`) and remove (`rm ~/.config/autostart/[name]`) apps that you don't need to start up automatically. If the autostart directory is empty or only contains small scripts, you are already good.
+
 - [ ] Enable automatic fstrim (Standard step for BTRFS, can improve disk performance and lifespan)
       
 To enable it run:
