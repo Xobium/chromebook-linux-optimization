@@ -119,7 +119,7 @@ Add these lines to the bottom of the fstab. If the line for `/tmp` already exist
 
 Save the file (Ctrl+O, Enter) and close the editor (Ctrl+X).
 
-- [ ] **IMPORTANT**: Configure APT to clear its cache on the fly
+- [ ] **IMPORTANT**: Configure APT to clear its cache after upgrades are complete
 
 Since we configured the APT cache to live inside memory, we want to make sure it never uses up _too much_ of your RAM.
 
